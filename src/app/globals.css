@@ -1,4 +1,28 @@
 @import "tailwindcss";
 
+:root {
+  --bg-color: #E0E8F6;
+  --text-color: #1a1a1a;
+  --primary-color: #3b82f6;
+  --secondary-color: #f3f4f6;
+}
 
+body.no-transition,
+body.no-transition * {
+  transition: none !important;
+}
+
+
+body.dark {
+  --bg-color: #1A1A1A;
+  --text-color: #ededed;
+  --primary-color: #60a5fa;
+  --secondary-color: #1f2937;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
 /* testing   */

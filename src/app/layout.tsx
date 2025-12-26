@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import { ThemeProvider } from "./providers/ThemeProvider";
+import Navbar from "../components/Navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,11 +14,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`bg-[#1a1a1a] text-white antialiased min-h-screen`}>
-        <ThemeProvider>
-          <Navbar />
-          {children}
-        </ThemeProvider>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const theme = localStorage.getItem('theme');
+                if (theme === 'dark') {
+                  document.body.classList.add('dark');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={` antialiased min-h-screen`}>
+        <Navbar />
+        {children}
       </body>
     </html>
   );
