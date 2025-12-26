@@ -2,7 +2,6 @@ name: Discord Repo Updates
 
 on:
   push:
-    branches: ["**"]
 
 jobs:
   notify:
@@ -11,20 +10,15 @@ jobs:
       - name: Send Discord embed (push)
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ACTOR: ${{ github.actor }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+          COMPARE_URL: ${{ github.event.compare }}
         run: |
-          ACTOR="${{ github.actor }}"
-          REPO="${{ github.repository }}"
-          BRANCH="${{ github.ref_name }}"
-          SHA="${{ github.sha }}"
           SHORT_SHA="${SHA:0:7}"
-
-          # Push payload fields
-          COMMIT_COUNT='${{ github.event.commits && github.event.commits.length || 1 }}'
-          COMMIT_MSG='${{ github.event.head_commit.message }}'
-          COMMIT_URL='${{ github.event.head_commit.url }}'
-          COMPARE_URL='${{ github.event.compare }}'
-
-          # GitHub avatar (simple + reliable)
           AVATAR_URL="https://github.com/${ACTOR}.png?size=64"
 
           curl -H "Content-Type: application/json" \
@@ -32,13 +26,10 @@ jobs:
               \"embeds\": [
                 {
                   \"color\": 5793266,
-                  \"author\": {
-                    \"name\": \"${ACTOR}\",
-                    \"icon_url\": \"${AVATAR_URL}\"
-                  },
-                  \"title\": \"[${REPO}:${BRANCH}] ${COMMIT_COUNT} new commit(s)\",
+                  \"author\": { \"name\": \"${ACTOR}\", \"icon_url\": \"${AVATAR_URL}\" },
+                  \"title\": \"[${REPO}:${BRANCH}] new commit(s)\",
                   \"url\": \"${COMPARE_URL}\",
-                  \"description\": "[`${SHORT_SHA}`](${COMMIT_URL}) ${COMMIT_MSG}",
+                  \"description\": \"[\`${SHORT_SHA}\`](${COMMIT_URL}) ${COMMIT_MSG}\",
                   \"footer\": { \"text\": \"GitHub Push\" }
                 }
               ]
