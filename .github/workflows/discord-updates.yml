@@ -31,13 +31,14 @@ jobs:
             -d "{
               \"embeds\": [
                 {
+                  \"color\": 5793266,
                   \"author\": {
                     \"name\": \"${ACTOR}\",
                     \"icon_url\": \"${AVATAR_URL}\"
                   },
                   \"title\": \"[${REPO}:${BRANCH}] ${COMMIT_COUNT} new commit(s)\",
                   \"url\": \"${COMPARE_URL}\",
-                  \"description\": \"[${SHORT_SHA}](${COMMIT_URL}) ${COMMIT_MSG}\",
+                  \"description\": "[`${SHORT_SHA}`](${COMMIT_URL}) ${COMMIT_MSG}",
                   \"footer\": { \"text\": \"GitHub Push\" }
                 }
               ]
