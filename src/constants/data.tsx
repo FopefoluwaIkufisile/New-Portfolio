@@ -17,8 +17,4 @@ export const navLinks: INavbar[] = [
     name: "Skills",
     url: "/",
   },
-  {
-    name: "Contact Me",
-    url: "/",
-  },
 ];

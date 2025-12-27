@@ -13,21 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                const theme = localStorage.getItem('theme');
-                if (theme === 'dark') {
-                  document.body.classList.add('dark');
-                }
-              })();
-            `,
-          }}
-        />
-      </head>
+    <html lang="en">        
       <body className={` antialiased min-h-screen`}>
         <Navbar />
         {children}
