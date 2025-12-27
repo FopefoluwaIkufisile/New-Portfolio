@@ -19,18 +19,42 @@ jobs:
           COMPARE_URL: ${{ github.event.compare }}
         run: |
           SHORT_SHA="${SHA:0:7}"
-          AVATAR_URL="https://github.com/${ACTOR}.png?size=64"
+          AVATAR_URL="https://github.com/${ACTOR}.png?size=128"
+          REPO_NAME="${REPO##*/}"
+          OWNER_NAME="${REPO%%/*}"
+          OWNER_AVATAR="https://avatars.githubusercontent.com/${OWNER_NAME}?size=128"
+          NOW="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          SAFE_MSG="$(echo "${COMMIT_MSG}" | tr '\n' ' ' | cut -c1-240)"
 
           curl -H "Content-Type: application/json" \
             -d "{
+              \"username\": \"GitHub\",
+              \"avatar_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\",
               \"embeds\": [
                 {
-                  \"color\": 5793266,
-                  \"author\": { \"name\": \"${ACTOR}\", \"icon_url\": \"${AVATAR_URL}\" },
-                  \"title\": \"[${REPO}:${BRANCH}] new commit(s)\",
+                  \"color\": 0,
+                  \"author\": {
+                    \"name\": \"${ACTOR} pushed to ${BRANCH}\",
+                    \"url\": \"https://github.com/${ACTOR}\",
+                    \"icon_url\": \"${AVATAR_URL}\"
+                  },
+                  \"title\": \"⚡ ${REPO_NAME} • New Push Detected\",
                   \"url\": \"${COMPARE_URL}\",
-                  \"description\": \"[\`${SHORT_SHA}\`](${COMMIT_URL}) ${COMMIT_MSG}\",
-                  \"footer\": { \"text\": \"GitHub Push\" }
+                  \"description\": \"**Commit**: [\\`${SHORT_SHA}\\`](${COMMIT_URL})\\n\\n> ${SAFE_MSG}\",
+                  \"thumbnail\": { \"url\": \"${OWNER_AVATAR}\" },
+                  \"fields\": [
+                    { \"name\": \"Repository\", \"value\": \"[\\`${REPO}\\`](https://github.com/${REPO})\", \"inline\": true },
+                    { \"name\": \"Branch\", \"value\": \"\\`${BRANCH}\\`\", \"inline\": true },
+                    { \"name\": \"Compare\", \"value\": \"[View diff ↗](${COMPARE_URL})\", \"inline\": true },
+                    { \"name\": \"Actor\", \"value\": \"[\\`${ACTOR}\\`](https://github.com/${ACTOR})\", \"inline\": true },
+                    { \"name\": \"SHA\", \"value\": \"\\`${SHORT_SHA}\\`\", \"inline\": true },
+                    { \"name\": \"Event\", \"value\": \"\\`push\\`\", \"inline\": true }
+                  ],
+                  \"footer\": {
+                    \"text\": \"GitHub → Discord • Automated Repo Feed\",
+                    \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
+                  },
+                  \"timestamp\": \"${NOW}\"
                 }
               ]
             }" \
