@@ -3,7 +3,7 @@
 const Home = () => {
   return (
     <div
-      className="  h-40"
+      className=" border-2 border-red-500 h-40"
     ></div>
   );
 };
