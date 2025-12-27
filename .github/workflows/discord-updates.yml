@@ -34,7 +34,7 @@ jobs:
             -d "{
               \"embeds\": [
                 {
-                  \"color\": 3447003,
+                  \"color\": 	12406784,
                   \"author\": { 
                     \"name\": \"${REPO_OWNER}/${REPO_NAME}\",
                     \"url\": \"https://github.com/${REPO}\",
