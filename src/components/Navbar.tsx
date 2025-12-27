@@ -22,8 +22,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-10 py-7 bg-transparent">
-      <div className="flex gap-6">
+    <nav className="flex flex-col max-md:gap-4 md:flex-row items-center md:justify-between px-10 py-7 bg-transparent ">
+      <div className="flex gap-6 max-md:flex-wrap max-md:items-center">
         {navLinks.map(({ name, url }: INavbar) => (
           <a href={url} key={name}>
             {name}
