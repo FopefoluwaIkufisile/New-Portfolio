@@ -19,18 +19,46 @@ jobs:
           COMPARE_URL: ${{ github.event.compare }}
         run: |
           SHORT_SHA="${SHA:0:7}"
-          AVATAR_URL="https://github.com/${ACTOR}.png?size=64"
+          AVATAR_URL="https://github.com/${ACTOR}.png?size=128"
+          REPO_NAME=$(echo "${REPO}" | awk -F/ '{print $2}')
+          
+          # Format the commit message (remove newlines for clean display)
+          CLEAN_COMMIT_MSG=$(echo "${COMMIT_MSG}" | tr '\n' ' ' | sed 's/  */ /g')
 
           curl -H "Content-Type: application/json" \
             -d "{
               \"embeds\": [
                 {
-                  \"color\": 5793266,
-                  \"author\": { \"name\": \"${ACTOR}\", \"icon_url\": \"${AVATAR_URL}\" },
-                  \"title\": \"[${REPO}:${BRANCH}] new commit(s)\",
+                  \"color\": 3447003,
+                  \"author\": { 
+                    \"name\": \"${ACTOR}\", 
+                    \"icon_url\": \"${AVATAR_URL}\",
+                    \"url\": \"https://github.com/${ACTOR}\"
+                  },
+                  \"title\": \"📤 Push to ${REPO_NAME}\",
                   \"url\": \"${COMPARE_URL}\",
-                  \"description\": \"[\`${SHORT_SHA}\`](${COMMIT_URL}) ${COMMIT_MSG}\",
-                  \"footer\": { \"text\": \"GitHub Push\" }
+                  \"fields\": [
+                    {
+                      \"name\": \"🔹 Branch\",
+                      \"value\": \"**\`${BRANCH}\`**\",
+                      \"inline\": true
+                    },
+                    {
+                      \"name\": \"🔹 Commit\",
+                      \"value\": \"[\`${SHORT_SHA}\`](${COMMIT_URL})\",
+                      \"inline\": true
+                    },
+                    {
+                      \"name\": \"📝 Message\",
+                      \"value\": \"${CLEAN_COMMIT_MSG}\",
+                      \"inline\": false
+                    }
+                  ],
+                  \"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\",
+                  \"footer\": { 
+                    \"text\": \"GitHub\", 
+                    \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
+                  }
                 }
               ]
             }" \
