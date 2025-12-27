@@ -3,7 +3,7 @@
 const Home = () => {
   return (
     <div
-      className=" -40"
+      className="border-2 border-yellow-500 -40"
     ></div>
   );
 };
