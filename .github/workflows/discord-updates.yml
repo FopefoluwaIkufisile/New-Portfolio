@@ -34,7 +34,7 @@ jobs:
             -d "{
               \"embeds\": [
                 {
-                  \"author\": { 
+                  \"author\": {  
                     \"name\": \"${REPO_OWNER}/${REPO_NAME}\",
                     \"url\": \"https://github.com/${REPO}\",
                     \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
