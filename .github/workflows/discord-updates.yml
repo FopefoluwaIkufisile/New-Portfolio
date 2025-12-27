@@ -21,9 +21,14 @@ jobs:
           SHORT_SHA="${SHA:0:7}"
           AVATAR_URL="https://github.com/${ACTOR}.png?size=128"
           REPO_NAME=$(echo "${REPO}" | awk -F/ '{print $2}')
+          REPO_OWNER=$(echo "${REPO}" | awk -F/ '{print $1}')
           
-          # Format the commit message (remove newlines for clean display)
-          CLEAN_COMMIT_MSG=$(echo "${COMMIT_MSG}" | tr '\n' ' ' | sed 's/  */ /g')
+          # Format commit message (take first line, clean up)
+          COMMIT_FIRST_LINE=$(echo "${COMMIT_MSG}" | head -1)
+          CLEAN_COMMIT_MSG=$(echo "${COMMIT_FIRST_LINE}" | sed 's/"/\\"/g' | tr '\n' ' ' | sed 's/  */ /g')
+          
+          # Get current time in Discord timestamp format
+          CURRENT_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
           curl -H "Content-Type: application/json" \
             -d "{
@@ -31,34 +36,53 @@ jobs:
                 {
                   \"color\": 3447003,
                   \"author\": { 
-                    \"name\": \"${ACTOR}\", 
-                    \"icon_url\": \"${AVATAR_URL}\",
-                    \"url\": \"https://github.com/${ACTOR}\"
+                    \"name\": \"${REPO_OWNER}/${REPO_NAME}\",
+                    \"url\": \"https://github.com/${REPO}\",
+                    \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
                   },
-                  \"title\": \"📤 Push to ${REPO_NAME}\",
+                  \"title\": \"📤 New Push Event\",
                   \"url\": \"${COMPARE_URL}\",
+                  \"description\": \"A new push has been made to the repository.\",
                   \"fields\": [
                     {
-                      \"name\": \"🔹 Branch\",
-                      \"value\": \"**\`${BRANCH}\`**\",
+                      \"name\": \"👤 Author\",
+                      \"value\": \"[${ACTOR}](https://github.com/${ACTOR})\",
                       \"inline\": true
                     },
                     {
-                      \"name\": \"🔹 Commit\",
+                      \"name\": \"🌿 Branch\",
+                      \"value\": \"\`${BRANCH}\`\",
+                      \"inline\": true
+                    },
+                    {
+                      \"name\": \"🔗 Commit Hash\",
                       \"value\": \"[\`${SHORT_SHA}\`](${COMMIT_URL})\",
                       \"inline\": true
                     },
                     {
-                      \"name\": \"📝 Message\",
+                      \"name\": \"📝 Commit Message\",
                       \"value\": \"${CLEAN_COMMIT_MSG}\",
                       \"inline\": false
+                    },
+                    {
+                      \"name\": \"🔍 View Changes\",
+                      \"value\": \"[Compare Changes](${COMPARE_URL})\",
+                      \"inline\": true
+                    },
+                    {
+                      \"name\": \"🕐 Timestamp\",
+                      \"value\": \"<t:$(date -d \"${CURRENT_TIME}\" +%s):R>\",
+                      \"inline\": true
                     }
                   ],
-                  \"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\",
+                  \"thumbnail\": { 
+                    \"url\": \"${AVATAR_URL}\"
+                  },
                   \"footer\": { 
-                    \"text\": \"GitHub\", 
+                    \"text\": \"GitHub Actions • Repository Update\",
                     \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
-                  }
+                  },
+                  \"timestamp\": \"${CURRENT_TIME}\"
                 }
               ]
             }" \
