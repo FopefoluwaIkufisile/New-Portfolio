@@ -7,10 +7,6 @@
   --secondary-color: #f3f4f6;
 }
 
-body.no-transition,
-body.no-transition * {
-  transition: none !important;
-}
 
 
 body.dark {
