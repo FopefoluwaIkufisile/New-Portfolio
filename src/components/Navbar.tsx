@@ -31,7 +31,7 @@ const Navbar = () => {
         ))}
       </div>
 
-      <div className="flex items-center gap-7">
+      <div className="flex items-center gap-8">
         <a href="#contact">Contact me</a>
         <button onClick={toggleTheme}>
           {dark ? <MdDarkMode className="size-7" /> : <MdOutlineLightMode className="size-7" />}
